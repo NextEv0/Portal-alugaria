@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Portal Alugaria - Login</title>
+        <link rel="stylesheet" type="text/css" href="./login.css" media="screen">
+        <link rel="stylesheet" href="css/font-awesome.min.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    </head>
+
+    <body class="Corpo">
+        <div class="container">
+            <div class="wrapper"> 
+            <form>
+                <h1>Efetue o login</h1>
+                <div class="input-box">
+                    <label for="email">Email</label>
+                        <input name="email" type="email" required />
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="input-box">
+                    <label for="password">Senha</label>
+                        <input name="password" type="password" required />
+                    <FaLock class="icones"/>
+                </div>
+
+                <div class="lembrar-esquecer">
+                    <label ><input type="checkbox" />Lembre-se de mim</label>
+                    <a href="#"> Esqueceu a senha?</a>
+                </div>
+
+                <button type="submit" onClick={handleLogin}>Login</button>
+
+                <div class="linkderegistro">
+                    <p>Não tem uma conta?<a href="#"> Registrar</a></p>
+                </div>
+            </form>           
+            </div>
+        </div>
+    </body>
+
+</html>
+
