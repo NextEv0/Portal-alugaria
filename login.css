@@ -101,6 +101,7 @@ body {
     justify-content: space-between;
     font-size: 14px;
     margin: -15px 0 15px ;
+    padding-top: 20px;
 }
 
 .lembrar-esquecer label input{
