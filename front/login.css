@@ -1,0 +1,153 @@
+@import "../Testes/reset.css";
+
+*, *:before, *:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+:root {
+    font-family: "IBM Plex Sans", sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    /*background: url(./assets/astronomia-do-ceu-noturno-galactico-e-ciencia-combinaram-ia-generativa.jpg) no-repeat;*/
+    background-image: linear-gradient(to top right, 
+    #3864fb, #c274e8);
+    background-size: cover;
+    background-position: center;
+    font-family: "IBM Plex Sans", sans-serif;
+}
+
+.container{
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.wrapper{
+    width: 420px;
+    background-color: rgb(24,20,20);
+    border: 1px solid rgba(255, 255, 255, .2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+    backdrop-filter: blur(10px);
+    color: white;
+    border-radius: 5px;
+    padding: 30px 40px;
+    justify-content: center;
+    align-items: center;
+}
+
+.wrapper h1{
+    font-weight: normal;
+    font-size: 36px;
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, .2);
+}
+
+.wrapper .input-box{
+    position: relative;
+    width: 100%;
+    height: 50px;
+    margin: 30px 0;
+}
+
+.wrapper label{
+    font-size: .875rem;
+}
+
+.input-box input{
+    width: 100%;
+    height: 20%;
+    background-color: rgb(40,36,36);
+    border: none;
+    outline: none;
+    margin-top: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, .2);
+    font-size: 16px;
+    color: rgba(255,255,255,255);
+    padding: 20px 45px 20px 20px;
+}
+
+.input-box input::placeholder{
+    color: white;
+
+}
+
+.input-box .icones{
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+}
+
+.wrapper .lembrar-esquecer{
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin: -10px 0 15px ;
+    padding-top: 20px;
+}
+
+.lembrar-esquecer label input{
+    accent-color: white ;
+    margin-right: 4px;
+}
+
+.lembrar-esquecer a{
+    color: white;
+    text-decoration: none;
+}
+
+.lembrar-esquecer a:hover{
+    text-decoration: underline;
+}
+
+.wrapper button{
+    width: 100%;
+    height: 45px;
+    background-color: rgb(16,100,252);
+    border: none;
+    outline: none;
+    box-shadow: 0 0 10 rgba(0, 0, 0, .1);
+    text-align: left;
+    cursor: pointer;
+    font-size: 16px;
+    color: rgba(255,255,255,255);
+    padding-left: 20px;
+    margin: 5px 0px;
+}
+
+.wrapper .linkderegistro {
+    border-top: 1px solid rgba(255, 255, 255, .2);
+    font-size: 14.5px;
+    text-align: center;
+    margin: 25px 0 15px;
+    padding-top: 5px;
+}
+
+.linkderegistro p a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.linkderegistro p a:hover {
+    text-decoration: underline;
+}
