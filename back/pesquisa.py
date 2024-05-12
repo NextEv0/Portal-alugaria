@@ -44,3 +44,12 @@ if __name__ == "__main__":
             print()
     else:
         print("Não foram encontradas salas similares.")    
+
+def verificar_disponibilidade (numero_sala, dados_salas):
+    if numero_sala in dados_salas.index:
+        if dados_salas.loc[numero_sala]['Disponibilidade'] == 'Sim':
+            return True
+        else:
+            return False
+    else:
+        return None
