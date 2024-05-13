@@ -10,6 +10,7 @@ try:
     db = client['Arsenium']
     User = db['User']
     Room = db['Room']
-    Reserve = db['Reserve']
+    Schedules = db['Schedules']
+    print("Pinged your deployment. You successfully connected to MongoDB!")
 except Exception as e:
     print(e)
