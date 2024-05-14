@@ -1,4 +1,6 @@
 import pandas as pd
+from os import system
+from pprint import pprint
 from database import User, Room, Schedules
 from werkzeug.security import check_password_hash
 
@@ -59,3 +61,67 @@ def room_query(room_name=None):
     query['end_time'] = pd.to_datetime(query["end_time"]).dt.strftime('%H:%M')
 
     return query
+
+
+def reserve_room(user_id, room_name, date, start_time, end_time):
+    response = {'success': False, 'message': None}
+    
+    # Obter dados da sala
+    room_df = room_query(room_name)
+    
+    if room_df.empty:
+        response['message'] = "Sala não encontrada"
+        return response
+    
+    # Convertendo strings para datetime para comparação
+    date = pd.to_datetime(date, format='%d-%m-%Y')
+    start_time = pd.to_datetime(start_time, format='%H:%M').time()
+    end_time = pd.to_datetime(end_time, format='%H:%M').time()
+    
+    # Filtrando para a data específica
+    room_df['date'] = pd.to_datetime(room_df['date'], format='%d-%m-%Y')
+    room_df = room_df[room_df['date'] == date]
+    
+    if room_df.empty:
+        response['message'] = "Nenhuma reserva encontrada para a data fornecida"
+        return response
+
+    # Verificando se o intervalo está disponível
+    availability = room_df[
+        (pd.to_datetime(room_df['start_time'], format='%H:%M').dt.time >= start_time) & 
+        (pd.to_datetime(room_df['end_time'], format='%H:%M').dt.time <= end_time) &
+        (room_df['reserved'] == False)
+    ]
+    
+    if availability.empty:
+        response['message'] = "Horário já reservado ou indisponível"
+        return response
+    
+    # Atualizando as reservas
+    room_df.loc[
+        (pd.to_datetime(room_df['start_time'], format='%H:%M').dt.time >= start_time) & 
+        (pd.to_datetime(room_df['end_time'], format='%H:%M').dt.time <= end_time) &
+        (room_df['reserved'] == False),
+        ['reserved', 'user_id', 'description']
+    ] = [True, user_id, 'Reserva Pessoal']
+    
+
+    # Opcional: Persistir as mudanças na base de dados
+    for index, row in room_df.iterrows():
+        Schedules.update_one({'_id': row['_id']}, {'$set': {'reserved': row['reserved'], 'user_id': row['user_id'], 'description': row['description']}})
+    
+    response['success'] = True
+    response['message'] = "Sala reservada com sucesso"
+    return response
+
+if __name__ == "__main__":
+    system("cls")
+    current_user = User.find_one({'register': '22300028'})
+
+    response = reserve_room(current_user['_id'], room_name="Sala 08", date="13-05-2024", start_time="16:30", end_time="18:10")
+
+    resultado = room_query("Sala 08").drop(['room_id', 'user_id'], axis=1)
+
+    print(response['message'])
+    print(resultado.head(15))
+    
