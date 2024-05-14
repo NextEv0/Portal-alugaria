@@ -3,38 +3,19 @@ from bson import ObjectId
 import pprint
 import pandas as pd
 
-id = ObjectId("6641076e5cc70f1f94e2e53f")
-reservas = Schedules.find({'room_id': id})
+user_df = pd.DataFrame(list(User.find()))
+user_df['user_id'] = user_df['_id']
+user_df = user_df.drop(['_id','role','register','account'], axis=1)
 
-df = pd.DataFrame(list(reservas))
+room_df = pd.DataFrame(list(Room.find()))
+room_df['room_id'] = room_df['_id']
+room_df = room_df.drop(['_id','floor', 'description'], axis=1)
 
-pipeline = [
-    {
-        '$lookup': {
-            'from': 'User',
-            'localField': 'room_id',
-            'foreignField': '_id',
-            'as': 'user_info'
-        }
-    },
-    {
-        '$lookup': {
-            'from': 'Room',
-            'localField': 'room_id',
-            'foreignField': '_id',
-            'as': 'room_info'
-        }
-    },
-    {
-        '$project': {
-            'user_info.account': 0,
-            'room_info': 0
-        }
-    }
-]
 
-result = db['Schedules'].aggregate(pipeline)
+schedules_df = pd.DataFrame(list(Schedules.find()))
+query = schedules_df.merge( room_df, on='room_id')
+query = query.merge(user_df, on='user_id', how='left')
 
-df = pd.DataFrame(list(result))
+query = query.drop([ '_id', 'room_id'], axis=1)
 
-print(df.head())
+print(query.head(20))
