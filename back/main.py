@@ -1,7 +1,7 @@
 import pandas as pd
 import functions as fc
 from os import system
-from database import User, Room, Schedules
+from time import sleep
 
 while True:
     system("cls")
@@ -21,11 +21,10 @@ while True:
 
         if not response['authenticated']:
             print(response['message'])
-            system("pause")
-        
+            input("Pressione qualquer tecla para continuar...")
         else:
             print(response['message'])
-            system("pause")
+            input("Pressione qualquer tecla para continuar...")
             break
 
     elif choice == 2:
@@ -33,7 +32,7 @@ while True:
         exit()
     else:
         print("Comando inválido")
-        system("pause")
+        input("Pressione qualquer tecla para continuar...")
 
 current_user = response['user']
 
@@ -52,10 +51,18 @@ while True:
         sala_nome = input("Digite o nome da sala: ")
         query = fc.room_query(sala_nome)
         print(query)
-        system("pause")
+        input("Pressione qualquer tecla para continuar...")
+    elif choice == 2:
+        sala_nome = input("Digite o nome da sala para reserva: ")
+        date = input("Digite a data (dd-mm-yyyy): ")
+        start_time = input("Digite a hora de início (HH:MM): ")
+        end_time = input("Digite a hora de fim (HH:MM): ")
+        response = fc.reserve_room(current_user['_id'], sala_nome, date, start_time, end_time)
+        print(response['message'])
+        input("Pressione qualquer tecla para continuar...")
     elif choice == 3:
         print("Programa Encerrado!")
         exit()
     else:
         print("Comando inválido")
-        system("pause")
+        input("Pressione qualquer tecla para continuar...")
