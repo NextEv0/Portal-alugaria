@@ -1,24 +1,68 @@
-from login import login
+from os import system 
+from database import User, Room, Schedules
+from werkzeug.security import check_password_hash
 from pesquisa import pesquisar_sala, verificar_disponibilidade
 
-def main():
-    if login(email_usuario, senha_usuario):
-        print("Autenticação bem-sucedida!")
+def login(email: str, password: str):
+    response = {'authenticated': False, 'message': None,'user': None}
+    
+    if ".cesupa.br" not in email:
+        response['message'] = "E-mail não pertence ao domínio cesupa"
+        return response
+
+    user = User.find_one({'account.email': email})
+    
+    if not user:
+        response['message'] = "Usuário não encontrado"
+        return  response
+    
+    if not check_password_hash(user['account']['password'], password):
+        response['message'] = "Senha incorreta"
+        return response
+    response['user'] = user
+    response['message'] = "Acesso concedido"
+    response['authenticated'] = True
+    return response
+
+
+while True:
+    system("cls")
+    print("-----------------------------------------")
+    print("                                         ")
+    print("               [1] LOGIN                 ")
+    print("               [2] SAIR                  ")
+    print("                                         ")
+    print("-----------------------------------------")
+    choice = int(input("> "))
+
+    if choice == 1:
+        email = input("Por favor, insira o seu email: ")
+        password = input("Por favor, insira a sua senha: ")
         
-        sala_info = pesquisar_sala(numero_sala)
-        if sala_info:
-            print("Informações da sala:", sala_info)
-        else:
-            print("Sala não encontrada.")
+        response = login(email, password)
 
-        # Verificar a disponibilidade da sala
-        disponibilidade = verificar_disponibilidade(numero_sala)
-        if disponibilidade:
-            print("A sala está disponível.")
+        if not response['authenticated']:
+            print(response['message'])
+            system("pause")
+        
         else:
-            print("A sala não está disponível.")
+            print(response['message'])
+            system("pause")
+            break
+
+    elif choice == 2:
+        print("Programa Encerrado!")
+        exit()
     else:
-        print("Falha na autenticação.")
-
-if __name__ == '__main__':
-    main()
+        print("Comando inválido")
+        system("pause")
+current_user = response['user']
+while True:
+    system("cls")
+    print("-----------------------------------------")
+    print("                                         ")
+    print("            [1] PESQUISAR SALA           ")
+    print("            [2]     SAIR                 ")
+    print("                                         ")
+    print("-----------------------------------------")
+    choice = int(input("> "))
