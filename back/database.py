@@ -11,6 +11,5 @@ try:
     User = db['User']
     Room = db['Room']
     Schedules = db['Schedules']
-    print("Pinged your deployment. You successfully connected to MongoDB!")
 except Exception as e:
     print(e)
