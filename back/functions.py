@@ -3,6 +3,8 @@ from os import system
 from pprint import pprint
 from database import User, Room, Schedules
 from werkzeug.security import check_password_hash
+from email_sender import send_email
+
 
 def login(email: str, password: str):
     response = {'authenticated': False, 'message': None,'user': None}
@@ -112,6 +114,15 @@ def reserve_room(user_id, room_name, date, start_time, end_time):
     
     response['success'] = True
     response['message'] = "Sala reservada com sucesso"
+
+    # Enviando e-mail de confirmação
+    user = User.find_one({'_id': user_id})
+    email = user['account']['email']
+    subject = "Confirmação de Reserva de Sala"
+    message = f"Olá {user['name']},\n\nSua reserva para a sala {room_name} foi confirmada para o dia {date.strftime('%d-%m-%Y')} das {start_time.strftime('%H:%M')} às {end_time.strftime('%H:%M')}.\n\nAtenciosamente,\nEquipe de Reservas"
+
+    send_email(email, subject, message)
+
     return response
 
 if __name__ == "__main__":

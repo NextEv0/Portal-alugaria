@@ -1,7 +1,5 @@
-import pandas as pd
 import functions as fc
 from os import system
-from time import sleep
 
 while True:
     system("cls")
