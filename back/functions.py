@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from os import system
 from pprint import pprint
 from database import User, Room, Schedules
@@ -107,8 +108,6 @@ def reserve_room(user_id, room_name, date, start_time, end_time):
         ['reserved', 'user_id', 'description']
     ] = [True, user_id, 'Reserva Pessoal']
     
-
-    # Opcional: Persistir as mudanças na base de dados
     for index, row in room_df.iterrows():
         Schedules.update_one({'_id': row['_id']}, {'$set': {'reserved': row['reserved'], 'user_id': row['user_id'], 'description': row['description']}})
     
@@ -120,6 +119,52 @@ def reserve_room(user_id, room_name, date, start_time, end_time):
     email = user['account']['email']
     subject = "Confirmação de Reserva de Sala"
     message = f"Olá {user['name']},\n\nSua reserva para a sala {room_name} foi confirmada para o dia {date.strftime('%d-%m-%Y')} das {start_time.strftime('%H:%M')} às {end_time.strftime('%H:%M')}.\n\nAtenciosamente,\nEquipe de Reservas"
+
+    send_email(email, subject, message)
+
+    return response
+
+
+def cancel_reserve(user_id, room_name, date):
+    response = {'success': False, 'message': None}
+    room_df = room_query(room_name)
+    
+    if room_df.empty:
+        response['message'] = "Sala não encontrada"
+        return response
+    
+    date = pd.to_datetime(date, format='%d-%m-%Y')
+
+    room_df['date'] = pd.to_datetime(room_df['date'], format='%d-%m-%Y')
+    room_df = room_df[room_df['date'] == date]
+    
+    if room_df.empty:
+        response['message'] = "Nenhuma reserva encontrada para a data fornecida"
+        return response
+
+    availability = room_df[(room_df['reserved'] == True)]
+    
+    if availability.empty:
+        response['message'] = "Você não possui reservas este dia"
+        return response
+
+    room_df.loc[
+        (room_df['user_id'] == user_id) &
+        (room_df['reserved'] == True),
+        ['reserved', 'user_id', 'description']
+    ] = [False, np.nan, 'Livre']
+
+    for index, row in room_df.iterrows():
+        Schedules.update_one({'_id': row['_id']}, {'$set': {'reserved': row['reserved'], 'user_id': row['user_id'], 'description': row['description']}})
+
+    response['success'] = True
+    response['message'] = "Reserva cancelada com sucesso"
+
+    # Enviando e-mail de confirmação
+    user = User.find_one({'_id': user_id})
+    email = user['account']['email']
+    subject = "Confirmação de cancelamento de Reserva de Sala"
+    message = f"Olá {user['name']},\n\nSua reserva para a sala {room_name} foi cancelada para o dia {date.strftime('%d-%m-%Y')}.\n\nAtenciosamente,\nEquipe de Reservas"
 
     send_email(email, subject, message)
 

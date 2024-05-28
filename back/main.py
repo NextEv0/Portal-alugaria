@@ -1,4 +1,5 @@
 import functions as fc
+import numpy as np
 from os import system
 
 while True:
@@ -103,8 +104,37 @@ while True:
             query = query.drop(['_id', 'room_id', 'user_id', 'reserved'], axis=1)
             colunas = {'date': 'Data', 'start_time': 'Inicio', 'end_time': 'Fim', 'description': 'Descrição', 'room_name': 'Sala', 'user_name': 'Usuário'}
             query = query.rename(columns=colunas)
+            print("Suas reservas: ")
             print(query)
-        input("Pressione qualquer tecla para continuar...")
+
+        print("\n")
+        print("[1] - Cancelar reserva")
+        print("[2] - Alterar data da reserva")
+        op3_choice = int(input("> "))
+
+        if op3_choice == 1:
+            sala_nome = input("Digite o nome da sala: ")
+            query = fc.room_query(sala_nome)
+            if query.empty:
+                print("A sala pesquisada não existe")
+            else:
+                date = input("Digite o dia da reserva (dd-mm-yyyy): ")
+        
+            query = query.loc[query['date'] == date]
+
+            if query.empty:
+                print("Você não possui reservas neste dia")
+            else:
+                response = fc.cancel_reserve(current_user['_id'], sala_nome, date)
+                print(response['message'])
+                input("Pressione qualquer tecla para continuar...")
+
+        elif op3_choice == 2:
+            pass
+
+        else: 
+            print("Comando inválido")
+            input("Pressione qualquer tecla para continuar...")
 
     elif choice == 4:
         print("Programa Encerrado!")
