@@ -1,6 +1,7 @@
 import functions as fc
 import numpy as np
 from os import system
+from email_sender import send_email
 
 while True:
     system("cls")
@@ -47,6 +48,7 @@ while True:
     print("-------------------------------------------")
     choice = int(input("> "))
 
+
     if choice == 1:
         sala_nome = input("Digite o nome da sala: ")
         query = fc.room_query(sala_nome)
@@ -66,6 +68,7 @@ while True:
             print(query)
         input("Pressione qualquer tecla para continuar...")
     
+
     elif choice == 2:
         sala_nome = input("Digite o nome da sala para reserva: ")
         query = fc.room_query(sala_nome)
@@ -90,9 +93,13 @@ while True:
             print(query)
             start_time = input("Digite a hora de início (HH:MM): ")
             end_time = input("Digite a hora de fim (HH:MM): ")
-            response = fc.reserve_room(current_user['_id'], sala_nome, date, start_time, end_time)
-            print(response['message'])
+            if not start_time or not end_time:
+                print("Horários de Reserva Inválidos")
+            else:
+                response = fc.reserve_room(current_user['_id'], sala_nome, date, start_time, end_time)
+                print(response['message'])
             input("Pressione qualquer tecla para continuar...")
+
 
     elif choice == 3:
         query = fc.room_query()
@@ -100,6 +107,7 @@ while True:
 
         if query.empty:
             print("Não há reservas feitas por você")
+            input("Pressione qualquer tecla para continuar...")
         else:
             query = query.drop(['_id', 'room_id', 'user_id', 'reserved'], axis=1)
             colunas = {'date': 'Data', 'start_time': 'Inicio', 'end_time': 'Fim', 'description': 'Descrição', 'room_name': 'Sala', 'user_name': 'Usuário'}
@@ -107,39 +115,51 @@ while True:
             print("Suas reservas: ")
             print(query)
 
-        print("\n")
-        print("[1] - Cancelar reserva")
-        print("[2] - Alterar data da reserva")
-        op3_choice = int(input("> "))
+            print("\n")
+            print("[1] - Cancelar reserva")
+            print("[2] - Alterar data da reserva")
+            print("[3] - Sair")
+            op3_choice = int(input("> "))
 
-        if op3_choice == 1:
-            sala_nome = input("Digite o nome da sala: ")
-            query = fc.room_query(sala_nome)
-            if query.empty:
-                print("A sala pesquisada não existe")
-            else:
-                date = input("Digite o dia da reserva (dd-mm-yyyy): ")
-        
-            query = query.loc[query['date'] == date]
+            if op3_choice == 1:
+                sala_nome = input("Digite o nome da sala: ")
+                query = fc.room_query(sala_nome)
+                if query.empty:
+                    print("A sala pesquisada não existe")
+                else:
+                    date = input("Digite o dia da reserva (dd-mm-yyyy): ")
+            
+                query = query.loc[query['date'] == date]
 
-            if query.empty:
-                print("Você não possui reservas neste dia")
-            else:
-                response = fc.cancel_reserve(current_user['_id'], sala_nome, date)
+                if query.empty:
+                    print("Você não possui reservas neste dia")
+                else:
+                    response = fc.cancel_reserve(current_user['_id'], sala_nome, date)
+                    print(response['message'])
+                input("Pressione qualquer tecla para continuar...")
+
+            elif op3_choice == 2:
+                sala_nome = input("Digite o nome da sala: ")
+                current_date = input("Digite o dia atual da reserva (dd-mm-yyyy): ")
+                new_date = input("Digite o novo dia da reserva (dd-mm-yyyy): ")
+                response = fc.update_reserve(current_user['_id'], sala_nome, current_date, new_date)
                 print(response['message'])
                 input("Pressione qualquer tecla para continuar...")
 
-        elif op3_choice == 2:
-            pass
+            elif op3_choice == 3:
+                pass
 
-        else: 
-            print("Comando inválido")
-            input("Pressione qualquer tecla para continuar...")
+            else:
+                print("Comando Inválido")
+                input("Pressione qualquer tecla para continuar...")
+
 
     elif choice == 4:
         print("Programa Encerrado!")
         exit()
     
+
     else:
         print("Comando inválido")
         input("Pressione qualquer tecla para continuar...")
+        
